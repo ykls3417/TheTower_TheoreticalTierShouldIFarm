@@ -15,7 +15,6 @@ const defaultAdvancedSettings: AdvancedSettings = {
   gameSpeed: 1.0,
   perkBonus: 0,
   labLevel: 0,
-  critMultiplier: 1.0,
   isExpanded: false
 };
 

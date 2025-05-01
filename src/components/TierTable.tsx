@@ -28,11 +28,11 @@ const TierTable: React.FC = () => {
         <thead>
           <tr className="bg-gray-750 text-gray-300 text-left">
             <th className="p-3 border-b border-gray-700 w-24">Tier</th>
-            <th className="p-3 border-b border-gray-700 w-36">Max Wave</th>
+            <th className="p-3 border-b border-gray-700 w-48">Max Wave</th>
             <th className="p-3 border-b border-gray-700">Game Time</th>
-            <th className="p-3 border-b border-gray-700">Coins/Hour</th>
-            <th className="p-3 border-b border-gray-700">Cells/Hour</th>
-            <th className="p-3 border-b border-gray-700">Reroll Shards/Hour</th>
+            <th className="p-3 border-b border-gray-700">Coins/Hr</th>
+            <th className="p-3 border-b border-gray-700">Cells/Hr</th>
+            <th className="p-3 border-b border-gray-700">Reroll Shards/Hr</th>
             <th className="p-3 border-b border-gray-700 w-10"></th>
           </tr>
         </thead>

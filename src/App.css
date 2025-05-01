@@ -58,3 +58,17 @@ input, select, button {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 1px var(--color-accent-dark);
 }
+
+a {
+  color: whitesmoke; /* Default color for hyperlinks */
+}
+
+/* Style for hover effect */
+a:hover {
+  color: white; /* Color on hover */
+}
+
+/* Style for active link */
+a:active {
+  color: cyan; /* Color when link is being clicked */
+}

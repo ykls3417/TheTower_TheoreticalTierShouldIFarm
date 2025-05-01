@@ -8,7 +8,6 @@ export interface AdvancedSettings {
   gameSpeed: number;
   perkBonus: number;
   labLevel: number;
-  critMultiplier: number;
   isExpanded: boolean;
 }
 
