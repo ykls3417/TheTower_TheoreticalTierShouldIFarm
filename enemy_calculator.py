@@ -84,7 +84,7 @@ wave_data = np.flipud(np.array([row[1:] for row in wave_rates]))
 eb = np.array([1,1.3,1.4,1.5,1.6,1.7,1.8,1.9])
 elite_perc = np.array([0.0, 0.01, 0.04, 0.09, 0.16, 0.25, 0.36, 0.49, 0.64, 0.81, 1.0, 1.01, 1.04, 1.09, 1.16, 1.25, 1.36, 1.49, 1.64, 1.81, 2.0])
 
-def normal_enemy_calculator(wave:int, tier:int = 1, enemy_balance_level:int = 0):
+def normal_enemy_calculator(wave:int, tier:int = 1, enemy_balance_level:int = 0) -> dict[str, int]:
     wave_numbers_idx = 0
     for wave_number in wave_numbers[:-1]:
         if wave > wave_number:
@@ -145,7 +145,7 @@ def normal_enemy_calculator(wave:int, tier:int = 1, enemy_balance_level:int = 0)
     }
     
 
-def elite_enemy_calculator(wave:int, tier:int):
+def elite_enemy_calculator(wave:int, tier:int) -> dict[str, int]:
     counted_wave = 0
     single_tier_count = single_elite_spawn[1:, tier]
     double_tier_count = double_elite_spawn[1:, tier]
@@ -175,8 +175,22 @@ def elite_enemy_calculator(wave:int, tier:int):
         "scatter": int(elite*31//3)
     }
     
+def total_enemy_calculator(wave:int, tier:int = 1, enemy_balance_level:int = 0) -> dict[str, int] | str:
+    if wave < 0:
+        return "Wave error!"
+    if tier < 1 or tier > 18:
+        return "Tier Error!"
+    if enemy_balance_level < 0 or enemy_balance_level > 7:
+        return "Enemy balance level Error!"
+    
+    normal = normal_enemy_calculator(wave=wave, tier=tier, enemy_balance_level=enemy_balance_level)
+    elite = elite_enemy_calculator(wave=wave, tier=tier)
+    
+    return normal | elite
 
 if __name__ == "__main__":
-    for i in range(0, 2000, 100):
-        print(f"Wave {i}:", normal_enemy_calculator(i))
-        print(f"Wave {i} elite:", elite_enemy_calculator(i, 1))
+    # for i in range(0, 2000, 100):
+    #     print(f"Wave {i}:", normal_enemy_calculator(i))
+    #     print(f"Wave {i} elite:", elite_enemy_calculator(i, 1))
+        
+    print(total_enemy_calculator(10000,1,7))

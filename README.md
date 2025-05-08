@@ -22,4 +22,6 @@ Update date & time unknown.
 ## Acknowledgement
 Observation and Calculation are from [Spawn Count Calculator - eike23](https://tower.spacewi.de/SpawncountCalc.html).
 
+Game run time crosschecked with [Tower Perk Simulation - Skye](https://tower-perk-simulation.netlify.app/)
+
 Inspired by [What Tier Should I Farm - Skye](https://what-tier-should-i-farm.netlify.app/).
