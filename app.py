@@ -3,6 +3,7 @@ from flask_cors import CORS
 from utils.enemy_calculator import total_enemy_calculator
 from utils.game_rumtime_calculator import game_runtime_in_sec, sec2hr_converter
 from utils.resource_calculator import total_resource_gain
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -60,4 +61,7 @@ def calculate():
     })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Use environment variables for host and port, with defaults
+    host = os.getenv('HOST', '0.0.0.0')
+    port = int(os.getenv('PORT', 5000))
+    app.run(host=host, port=port, debug=os.getenv('FLASK_ENV') == 'development')
