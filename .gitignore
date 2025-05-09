@@ -1,0 +1,54 @@
+# Byte-compiled / optimized Python files
+__pycache__/
+*.pyc
+
+# Environment / virtualenv
+.env
+venv/
+ENV/
+
+# Logs
+*.log
+
+# Local configuration
+instance/
+
+# Compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+
+# Dependency directories
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+
+# Distribution / packaging
+*.egg
+*.egg-info
+dist/
+build/
+MANIFEST
+
+# Database
+*.db
+
+# IDE specific configs
+.idea/
+.vscode/
+*.iml
+
+# System files
+.DS_Store
+Thumbs.db
+
+node_modules
