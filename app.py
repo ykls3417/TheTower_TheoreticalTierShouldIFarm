@@ -6,7 +6,7 @@ from utils.resource_calculator import total_resource_gain
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/calculate": {"origins": "https://thetower-theoreticaltiershouldifarm.onrender.com/"}})
+CORS(app, resources={r"/calculate": {"origins": ["https://thetower-theoreticaltiershouldifarm.onrender.com", "http://localhost:5000"]}})
 
 @app.route('/')
 def index():
@@ -61,7 +61,6 @@ def calculate():
     })
 
 if __name__ == '__main__':
-    # Use environment variables for host and port, with defaults
     host = os.getenv('HOST', '0.0.0.0')
     port = int(os.getenv('PORT', 5000))
     app.run(host=host, port=port, debug=os.getenv('FLASK_ENV') == 'development')
