@@ -62,6 +62,7 @@ wave_rates = [
 ]
 
 def two_dim_data_parser(wiki_data:str):
+    wiki_data = wiki_data.replace(',', '')
     lines = wiki_data.splitlines()
     
     header = [i for i in lines[0].split("\t") if i != ""]
@@ -165,7 +166,6 @@ def elite_enemy_calculator(wave:int, tier:int) -> dict[str, int]:
         cur_elite_rate_per_wave = elite_perc[cur_elite_rate_idx]
         spawned_elite = 1.0 * cur_elite_rate_per_wave * interval_wave
         
-        # print(f"threshold {lower_threshold}-{higher_threshold}, interval_wave {interval_wave}, cur_rate {cur_elite_rate_per_wave}, spawned_elite {spawned_elite}")
         elite += spawned_elite
         cur_elite_rate_idx += 1
     
@@ -193,4 +193,4 @@ if __name__ == "__main__":
     #     print(f"Wave {i}:", normal_enemy_calculator(i))
     #     print(f"Wave {i} elite:", elite_enemy_calculator(i, 1))
         
-    print(total_enemy_calculator(10000,1,7))
+    print(total_enemy_calculator(0,18,7))
