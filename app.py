@@ -6,7 +6,7 @@ from utils.resource_calculator import total_resource_gain
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/calculate": {"origins": "https://thetower-theoreticaltiershouldifarm.onrender.com/"}})
 
 @app.route('/')
 def index():
