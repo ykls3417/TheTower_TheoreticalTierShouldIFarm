@@ -42,12 +42,16 @@
             width: 200px;
         }
 
-        input[type="number"] {
+        input[type="number"], select {
             background-color: #333;
             color: white;
             border: 1px solid #444;
             padding: 5px;
             border-radius: 4px;
+        }
+
+        select {
+            width: 200px;
         }
 
         table {
@@ -96,23 +100,42 @@
         <div class="advanced-content" id="advancedContent">
             <div class="setting-group">
                 <label for="enemyBalance">Enemy Balance Level:</label>
-                <input type="number" id="enemyBalance" min="0" max="7" value="0">
+                <input type="number" id="enemyBalance" min="0" max="7" value="0" onchange="recalculateAll()">
             </div>
             <div class="setting-group">
                 <label for="introSprint">Intro Sprint Wave:</label>
-                <input type="number" id="introSprint" min="0" value="0">
+                <select id="introSprint" onchange="recalculateAll()">
+                    <option value="0">0</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="60">60</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                    <option value="180">180</option>
+                    <option value="360">360</option>
+                    <option value="540">540</option>
+                    <option value="720">720</option>
+                    <option value="900">900</option>
+                    <option value="1080">1080</option>
+                    <option value="1260">1260</option>
+                    <option value="1440">1440</option>
+                    <option value="1620">1620</option>
+                    <option value="1800">1800</option>
+                </select>
             </div>
             <div class="setting-group">
                 <label for="wsLevel">Wave Skip Level:</label>
-                <input type="number" id="wsLevel" min="0" max="7" value="0">
+                <input type="number" id="wsLevel" min="0" max="7" value="0" onchange="recalculateAll()">
             </div>
             <div class="setting-group">
                 <label for="waLevel">Wave Acceleration Level:</label>
-                <input type="number" id="waLevel" min="0" max="7" value="0">
+                <input type="number" id="waLevel" min="0" max="7" value="0" onchange="recalculateAll()">
             </div>
             <div class="setting-group">
                 <label for="spbLevel">Standard Perk Bonus Level:</label>
-                <input type="number" id="spbLevel" min="0" max="25" value="0">
+                <input type="number" id="spbLevel" min="0" max="25" value="0" onchange="recalculateAll()">
             </div>
         </div>
     </div>
@@ -133,15 +156,41 @@
         </tbody>
     </table>
 
-    <script>
-        function toggleAdvanced() {
+    <script type="module">
+        import { loadPyodide } from 'pyodide';
+
+        let pyodide;
+        let pythonReady = false;
+
+        async function initPython() {
+            pyodide = await loadPyodide();
+            await pyodide.loadPackage("numpy");
+            
+            // Load all Python files
+            const response = await fetch('/enemy_calculator.py');
+            const enemyCalc = await response.text();
+            await pyodide.runPython(enemyCalc);
+            
+            const response2 = await fetch('/game_rumtime_calculator.py');
+            const gameRuntime = await response2.text();
+            await pyodide.runPython(gameRuntime);
+            
+            const response3 = await fetch('/resource_calculator.py');
+            const resourceCalc = await response3.text();
+            await pyodide.runPython(resourceCalc);
+            
+            pythonReady = true;
+            recalculateAll();
+        }
+
+        window.toggleAdvanced = function() {
             const content = document.getElementById('advancedContent');
             content.classList.toggle('show');
             const header = document.querySelector('.advanced-header');
             header.textContent = content.classList.contains('show') ? '▼ Advanced Settings' : '▶ Advanced Settings';
         }
 
-        function toggleDetails(tier) {
+        window.toggleDetails = function(tier) {
             const detailsRow = document.getElementById(`details-${tier}`);
             detailsRow.classList.toggle('show');
         }
@@ -149,22 +198,20 @@
         function createTableRows() {
             const tableBody = document.getElementById('tableBody');
             for (let tier = 1; tier <= 18; tier++) {
-                // Main row
                 const row = document.createElement('tr');
                 row.className = 'expandable-row';
                 row.onclick = () => toggleDetails(tier);
                 row.innerHTML = `
                     <td>Tier ${tier}</td>
-                    <td><input type="number" min="0" onchange="calculateResults(${tier}, this.value)"></td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td><input type="number" min="0" id="wave-${tier}" onchange="window.recalculateAll()"></td>
+                    <td id="time-${tier}">-</td>
+                    <td id="coin-${tier}">-</td>
+                    <td id="coinhr-${tier}">-</td>
+                    <td id="cell-${tier}">-</td>
+                    <td id="cellhr-${tier}">-</td>
                 `;
                 tableBody.appendChild(row);
 
-                // Details row
                 const detailsRow = document.createElement('tr');
                 detailsRow.className = 'details-row';
                 detailsRow.id = `details-${tier}`;
@@ -179,13 +226,69 @@
             }
         }
 
-        function calculateResults(tier, wave) {
-            // This function will be implemented to calculate results using the Python functions
-            console.log(`Calculating for Tier ${tier}, Wave ${wave}`);
+        window.recalculateAll = function() {
+            if (!pythonReady) return;
+
+            const enemyBalance = parseInt(document.getElementById('enemyBalance').value);
+            const introSprint = parseInt(document.getElementById('introSprint').value);
+            const wsLevel = parseInt(document.getElementById('wsLevel').value);
+            const waLevel = parseInt(document.getElementById('waLevel').value);
+            const spbLevel = parseInt(document.getElementById('spbLevel').value);
+
+            for (let tier = 1; tier <= 18; tier++) {
+                const waveInput = document.getElementById(`wave-${tier}`);
+                if (waveInput.value) {
+                    calculateResults(tier, parseInt(waveInput.value), enemyBalance, introSprint, wsLevel, waLevel, spbLevel);
+                }
+            }
         }
 
-        // Initialize table
+        function calculateResults(tier, wave, enemyBalance, introSprint, wsLevel, waLevel, spbLevel) {
+            try {
+                // Calculate enemies
+                const enemies = pyodide.runPython(`
+                    total_enemy_calculator(${wave}, ${tier}, ${enemyBalance})
+                `);
+                
+                // Calculate game runtime
+                const gameTime = pyodide.runPython(`
+                    game_runtime_in_sec(${wave}, ${introSprint}, ${wsLevel}, ${waLevel}, ${spbLevel})
+                `);
+                
+                // Calculate resources
+                const resources = pyodide.runPython(`
+                    total_resource_gain(${enemies}, ${tier})
+                `);
+
+                // Update UI
+                const timeInHours = gameTime / 3600;
+                const coins = resources.get('coin');
+                const cells = resources.get('cell');
+                
+                document.getElementById(`time-${tier}`).textContent = formatTime(gameTime);
+                document.getElementById(`coin-${tier}`).textContent = formatNumber(coins);
+                document.getElementById(`coinhr-${tier}`).textContent = formatNumber(Math.round(coins / timeInHours));
+                document.getElementById(`cell-${tier}`).textContent = formatNumber(cells);
+                document.getElementById(`cellhr-${tier}`).textContent = formatNumber(Math.round(cells / timeInHours));
+            } catch (error) {
+                console.error('Calculation error:', error);
+            }
+        }
+
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${hours}h ${minutes}m ${secs}s`;
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat().format(num);
+        }
+
+        // Initialize
         createTableRows();
+        initPython();
     </script>
 </body>
 </html>
