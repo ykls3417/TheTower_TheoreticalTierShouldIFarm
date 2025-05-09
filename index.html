@@ -9,7 +9,38 @@
             background-color: #1a1a1a;
             color: #ffffff;
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #4a9eff;
+            margin: 0;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-top: 10px;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #333;
+            color: #888;
         }
 
         .advanced-settings {
@@ -25,12 +56,13 @@
         }
 
         .advanced-content {
-            display: none;
-            margin-top: 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
         }
 
         .advanced-content.show {
-            display: block;
+            max-height: 500px;
         }
 
         .setting-group {
@@ -42,7 +74,7 @@
             width: 200px;
         }
 
-        input[type="number"] {
+        input[type="number"], select {
             background-color: #333;
             color: white;
             border: 1px solid #444;
@@ -75,63 +107,95 @@
         }
 
         .details-row {
-            display: none;
             background-color: #333;
-        }
-
-        .details-row.show {
-            display: table-row;
         }
 
         .details-content {
             padding: 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .details-content.show {
+            max-height: 200px;
         }
     </style>
 </head>
 <body>
-    <div class="advanced-settings">
-        <div class="advanced-header" onclick="toggleAdvanced()">
-            ▶ Advanced Settings
-        </div>
-        <div class="advanced-content" id="advancedContent">
-            <div class="setting-group">
-                <label for="enemyBalance">Enemy Balance Level:</label>
-                <input type="number" id="enemyBalance" min="0" max="7" value="0">
-            </div>
-            <div class="setting-group">
-                <label for="introSprint">Intro Sprint Wave:</label>
-                <input type="number" id="introSprint" min="0" value="0">
-            </div>
-            <div class="setting-group">
-                <label for="wsLevel">Wave Skip Level:</label>
-                <input type="number" id="wsLevel" min="0" max="7" value="0">
-            </div>
-            <div class="setting-group">
-                <label for="waLevel">Wave Acceleration Level:</label>
-                <input type="number" id="waLevel" min="0" max="7" value="0">
-            </div>
-            <div class="setting-group">
-                <label for="spbLevel">Standard Perk Bonus Level:</label>
-                <input type="number" id="spbLevel" min="0" max="25" value="0">
-            </div>
-        </div>
-    </div>
+    <header>
+        <h1>The Tower - Wave Calculator</h1>
+        <div class="subtitle">Calculate resources and timing based on your max wave achievements</div>
+    </header>
 
-    <table id="calculatorTable">
-        <thead>
-            <tr>
-                <th>Tier</th>
-                <th>Max Wave Input</th>
-                <th>Game Time</th>
-                <th>Base Coin</th>
-                <th>Coin Per Hour</th>
-                <th>Base Cell</th>
-                <th>Cell Per Hour</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-        </tbody>
-    </table>
+    <main>
+        <div class="advanced-settings">
+            <div class="advanced-header" onclick="toggleAdvanced()">
+                ▶ Advanced Settings
+            </div>
+            <div class="advanced-content" id="advancedContent">
+                <div class="setting-group">
+                    <label for="enemyBalance">Enemy Balance Level:</label>
+                    <input type="number" id="enemyBalance" min="0" max="7" value="0">
+                </div>
+                <div class="setting-group">
+                    <label for="introSprint">Intro Sprint Wave:</label>
+                    <select id="introSprint">
+                        <option value="0">0</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="80">80</option>
+                        <option value="100">100</option>
+                        <option value="180">180</option>
+                        <option value="360">360</option>
+                        <option value="540">540</option>
+                        <option value="720">720</option>
+                        <option value="900">900</option>
+                        <option value="1080">1080</option>
+                        <option value="1260">1260</option>
+                        <option value="1440">1440</option>
+                        <option value="1620">1620</option>
+                        <option value="1800">1800</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label for="wsLevel">Wave Skip Level:</label>
+                    <input type="number" id="wsLevel" min="0" max="7" value="0">
+                </div>
+                <div class="setting-group">
+                    <label for="waLevel">Wave Acceleration Level:</label>
+                    <input type="number" id="waLevel" min="0" max="7" value="0">
+                </div>
+                <div class="setting-group">
+                    <label for="spbLevel">Standard Perk Bonus Level:</label>
+                    <input type="number" id="spbLevel" min="0" max="25" value="0">
+                </div>
+            </div>
+        </div>
+
+        <table id="calculatorTable">
+            <thead>
+                <tr>
+                    <th>Tier</th>
+                    <th>Max Wave Input</th>
+                    <th>Game Time</th>
+                    <th>Base Coin</th>
+                    <th>Coin Per Hour</th>
+                    <th>Base Cell</th>
+                    <th>Cell Per Hour</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>© 2023 Tower Calculator | Created for The Tower Community</p>
+    </footer>
 
     <script>
         function toggleAdvanced() {
@@ -142,8 +206,53 @@
         }
 
         function toggleDetails(tier) {
-            const detailsRow = document.getElementById(`details-${tier}`);
-            detailsRow.classList.toggle('show');
+            const detailsContent = document.querySelector(`#details-${tier} .details-content`);
+            detailsContent.classList.toggle('show');
+        }
+
+        async function calculateResults(tier, wave) {
+            if (!wave) return;
+
+            const row = document.querySelector(`tr[data-tier="${tier}"]`);
+            const cells = row.getElementsByTagName('td');
+
+            const advancedSettings = {
+                enemyBalance: parseInt(document.getElementById('enemyBalance').value),
+                introSprint: parseInt(document.getElementById('introSprint').value),
+                wsLevel: parseInt(document.getElementById('wsLevel').value),
+                waLevel: parseInt(document.getElementById('waLevel').value),
+                spbLevel: parseInt(document.getElementById('spbLevel').value)
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        tier,
+                        wave,
+                        ...advancedSettings
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                cells[2].textContent = data.gameTime;
+                cells[3].textContent = data.baseCoin.toLocaleString();
+                cells[4].textContent = data.coinPerHour.toLocaleString();
+                cells[5].textContent = data.baseCell.toLocaleString();
+                cells[6].textContent = data.cellPerHour.toLocaleString();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to calculate results');
+            }
         }
 
         function createTableRows() {
@@ -152,7 +261,7 @@
                 // Main row
                 const row = document.createElement('tr');
                 row.className = 'expandable-row';
-                row.onclick = () => toggleDetails(tier);
+                row.setAttribute('data-tier', tier);
                 row.innerHTML = `
                     <td>Tier ${tier}</td>
                     <td><input type="number" min="0" onchange="calculateResults(${tier}, this.value)"></td>
@@ -162,6 +271,11 @@
                     <td>-</td>
                     <td>-</td>
                 `;
+                row.onclick = (e) => {
+                    if (!e.target.matches('input')) {
+                        toggleDetails(tier);
+                    }
+                };
                 tableBody.appendChild(row);
 
                 // Details row
@@ -179,13 +293,21 @@
             }
         }
 
-        function calculateResults(tier, wave) {
-            // This function will be implemented to calculate results using the Python functions
-            console.log(`Calculating for Tier ${tier}, Wave ${wave}`);
-        }
-
         // Initialize table
         createTableRows();
+
+        // Add event listeners for advanced settings
+        document.querySelectorAll('#advancedContent input, #advancedContent select').forEach(input => {
+            input.addEventListener('change', () => {
+                // Recalculate all rows that have values
+                document.querySelectorAll('#tableBody input[type="number"]').forEach(waveInput => {
+                    if (waveInput.value) {
+                        const tier = waveInput.closest('tr').getAttribute('data-tier');
+                        calculateResults(parseInt(tier), parseInt(waveInput.value));
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
