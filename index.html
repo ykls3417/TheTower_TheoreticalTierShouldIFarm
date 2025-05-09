@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Calculator</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .advanced-settings {
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .advanced-header {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .advanced-content {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .advanced-content.show {
+            display: block;
+        }
+
+        .setting-group {
+            margin: 10px 0;
+        }
+
+        label {
+            display: inline-block;
+            width: 200px;
+        }
+
+        input[type="number"] {
+            background-color: #333;
+            color: white;
+            border: 1px solid #444;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2a2a2a;
+        }
+
+        tr:nth-child(even) {
+            background-color: #2a2a2a;
+        }
+
+        .expandable-row {
+            cursor: pointer;
+        }
+
+        .details-row {
+            display: none;
+            background-color: #333;
+        }
+
+        .details-row.show {
+            display: table-row;
+        }
+
+        .details-content {
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="advanced-settings">
+        <div class="advanced-header" onclick="toggleAdvanced()">
+            ▶ Advanced Settings
+        </div>
+        <div class="advanced-content" id="advancedContent">
+            <div class="setting-group">
+                <label for="enemyBalance">Enemy Balance Level:</label>
+                <input type="number" id="enemyBalance" min="0" max="7" value="0">
+            </div>
+            <div class="setting-group">
+                <label for="introSprint">Intro Sprint Wave:</label>
+                <input type="number" id="introSprint" min="0" value="0">
+            </div>
+            <div class="setting-group">
+                <label for="wsLevel">Wave Skip Level:</label>
+                <input type="number" id="wsLevel" min="0" max="7" value="0">
+            </div>
+            <div class="setting-group">
+                <label for="waLevel">Wave Acceleration Level:</label>
+                <input type="number" id="waLevel" min="0" max="7" value="0">
+            </div>
+            <div class="setting-group">
+                <label for="spbLevel">Standard Perk Bonus Level:</label>
+                <input type="number" id="spbLevel" min="0" max="25" value="0">
+            </div>
+        </div>
+    </div>
+
+    <table id="calculatorTable">
+        <thead>
+            <tr>
+                <th>Tier</th>
+                <th>Max Wave Input</th>
+                <th>Game Time</th>
+                <th>Base Coin</th>
+                <th>Coin Per Hour</th>
+                <th>Base Cell</th>
+                <th>Cell Per Hour</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+
+    <script>
+        function toggleAdvanced() {
+            const content = document.getElementById('advancedContent');
+            content.classList.toggle('show');
+            const header = document.querySelector('.advanced-header');
+            header.textContent = content.classList.contains('show') ? '▼ Advanced Settings' : '▶ Advanced Settings';
+        }
+
+        function toggleDetails(tier) {
+            const detailsRow = document.getElementById(`details-${tier}`);
+            detailsRow.classList.toggle('show');
+        }
+
+        function createTableRows() {
+            const tableBody = document.getElementById('tableBody');
+            for (let tier = 1; tier <= 18; tier++) {
+                // Main row
+                const row = document.createElement('tr');
+                row.className = 'expandable-row';
+                row.onclick = () => toggleDetails(tier);
+                row.innerHTML = `
+                    <td>Tier ${tier}</td>
+                    <td><input type="number" min="0" onchange="calculateResults(${tier}, this.value)"></td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                `;
+                tableBody.appendChild(row);
+
+                // Details row
+                const detailsRow = document.createElement('tr');
+                detailsRow.className = 'details-row';
+                detailsRow.id = `details-${tier}`;
+                detailsRow.innerHTML = `
+                    <td colspan="7">
+                        <div class="details-content">
+                            Additional information for Tier ${tier}
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(detailsRow);
+            }
+        }
+
+        function calculateResults(tier, wave) {
+            // This function will be implemented to calculate results using the Python functions
+            console.log(`Calculating for Tier ${tier}, Wave ${wave}`);
+        }
+
+        // Initialize table
+        createTableRows();
+    </script>
+</body>
+</html>
