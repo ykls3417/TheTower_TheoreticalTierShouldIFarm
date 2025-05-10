@@ -189,6 +189,58 @@
             margin-left: 40px;
             padding-left: 10px;
         }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px solid whitesmoke;
+            cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 180px;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            border: 1px solid #444;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            font-size: 10px;
+            position: absolute;
+            z-index: 1;
+            top: -5px;
+            left: 105%;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Arrow for the tooltip */
+        .tooltip .tooltiptext::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #2a2a2a;
+        }
+
+        .tooltip .tooltiptext::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #444;
+            z-index: -1;
+        }
     </style>
 </head>
 
@@ -243,15 +295,23 @@
                     <label for="spbLevel">Standard Perk Bonus Level:</label>
                     <input type="number" id="spbLevel" min="0" max="25" value="0">
                 </div>
+                <div class="setting-group">
+                    <label for="gameSpeedPerkWave">
+                        <div class="tooltip">Game Speed Perk at Wave:<span class="tooltiptext">Estimated wave where you
+                                get the game speed perk, slightly affect the game time calculation, by default:
+                                800.</span> </div>
+                    </label>
+                    <input type="number" id="gameSpeedPerkWave" min="100" max="6000" value="800">
+                </div>
             </div>
         </div>
-        
+
         <table id="calculatorTable">
             <thead>
                 <tr>
                     <th>Tier</th>
                     <th>Max Wave Input</th>
-                    <th>Game Time</th>
+                    <th>Game Real Time</th>
                     <th>Base Coin</th>
                     <th>Coin Per Hour</th>
                     <th>Base Cell</th>
@@ -296,7 +356,8 @@
                 introSprint: parseInt(document.getElementById('introSprint').value),
                 wsLevel: parseInt(document.getElementById('wsLevel').value),
                 waLevel: parseInt(document.getElementById('waLevel').value),
-                spbLevel: parseInt(document.getElementById('spbLevel').value)
+                spbLevel: parseInt(document.getElementById('spbLevel').value),
+                gameSpeedPerkWave: parseInt(document.getElementById('gameSpeedPerkWave').value)
             };
 
             try {
@@ -326,9 +387,15 @@
                 cells[6].textContent = data.cellPerHour.toLocaleString();
 
                 const enemyCounts = Object.entries(data.enemies)
-                    .map(([type, count]) => `<li>${type}: ${count.toLocaleString()}</li>`)
+                    .map(([type, count]) => {
+                        if (type === 'scatter') {
+                            const parent_count = Math.floor(count / 31)
+                            return `<li>${type}: ${parent_count.toLocaleString()} <div class="tooltip">(Include scatter-childs: ${count.toLocaleString()})<span class="tooltiptext">Only scatter-parent drop cells, and both scatter parents & childs drop coins.</span> </div></li>`;
+                        }
+                        return `<li>${type}: ${count.toLocaleString()}</li>`;
+                    })
                     .join('');
-                detailsContent.innerHTML = `<ul style="margin-bottom: 5px; padding-left: 0px;">Enemies theorectical kill count: ${enemyCounts}</ul>`;
+                detailsContent.innerHTML = `<ul style="margin-bottom: 5px; padding-left: 0px;">Enemies theoretical kill count: ${enemyCounts}</ul>`;
             } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to calculate results');

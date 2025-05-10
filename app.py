@@ -22,6 +22,7 @@ def calculate():
     ws_level = int(data['wsLevel'])
     wa_level = int(data['waLevel'])
     spb_level = int(data['spbLevel'])
+    gameSpeedPerkWave = int(data['gameSpeedPerkWave'])
     
     # Calculate enemies
     enemies = total_enemy_calculator(wave, tier, enemy_balance)
@@ -34,7 +35,8 @@ def calculate():
         intro_sprint_wave=intro_sprint,
         ws_lvl=ws_level,
         wa_lvl=wa_level,
-        spb_lvl=spb_level
+        spb_lvl=spb_level,
+        fast_threshold=gameSpeedPerkWave
     )
     if isinstance(game_time_secs, str):
         return jsonify({"error": game_time_secs}), 400

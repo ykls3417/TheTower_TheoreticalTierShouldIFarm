@@ -10,7 +10,7 @@ def sec2hr_converter(input:int) -> str:
     str = f"{hour}h {min}m {int}s"
     return str
 
-def game_runtime_in_sec(wave:int, intro_sprint_wave: int = 0, ws_lvl: int = 0, wa_lvl: int = 0, spb_lvl: int = 0, game_time = False) -> int | str:
+def game_runtime_in_sec(wave:int, intro_sprint_wave: int = 0, ws_lvl: int = 0, wa_lvl: int = 0, spb_lvl: int = 0, fast_threshold: int=0, game_time = False) -> int | str:
     if ws_lvl < 0 or ws_lvl > 7:
         return "Wave skip level error!"
     if wa_lvl < 0 or wa_lvl > 7:
@@ -23,7 +23,6 @@ def game_runtime_in_sec(wave:int, intro_sprint_wave: int = 0, ws_lvl: int = 0, w
     this_wa_value = wa_value[wa_lvl]
     this_ws_value = ws_value[ws_lvl]
     
-    fast_threshold = 800
     slow_wave = 0
     fast_wave = 0
     
